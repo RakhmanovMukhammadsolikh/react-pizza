@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
+import { SearchContext } from '../App';
 import { Categories } from '../components/Categories';
 import { Sort } from '../components/Sort';
 import { PizzaBlock } from '../components/PizzaBlock';
@@ -7,7 +8,9 @@ import { Skeleton } from '../components/PizzaBlock/Skeleton';
 import { Pagination } from '../components/Pagination';
 
 
-export const Home = ({ searchValue }) => {
+export const Home = () => {
+    const { searchValue, } = React.useContext(SearchContext)
+
     const [items, setItems] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
@@ -33,7 +36,6 @@ export const Home = ({ searchValue }) => {
                 setItems(arr)
                 setIsLoading(false);
             })
-        window.scrollTo(0, 0)
     }, [categoryId, sortType, searchValue, currentPage])
 
     const pizzas = items
