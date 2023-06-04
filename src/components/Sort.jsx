@@ -15,7 +15,6 @@ export const Sort = () => {
     const { filterSlice } = useSelector((state) => state)
 
     const sort = filterSlice.sort
-    console.log(sort);
 
     const [open, setOpen] = useState(true)
 

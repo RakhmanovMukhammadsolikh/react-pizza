@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios';
 
-import { setCategoryId, setSort } from '../redux/slices/filterSlice'
+import { setCategoryId, setCurrentPage } from '../redux/slices/filterSlice'
 import { SearchContext } from '../App';
 import { Categories } from '../components/Categories';
 import { Sort } from '../components/Sort';
@@ -13,7 +14,7 @@ import { Pagination } from '../components/Pagination';
 export const Home = () => {
     const dispatch = useDispatch();
     const { filterSlice } = useSelector((state) => state)
-    const { sort, categoryId } = filterSlice
+    const { sort, categoryId, currentPage } = filterSlice
     const { sortProperty } = sort
     const sortType = sortProperty
 
@@ -21,7 +22,6 @@ export const Home = () => {
 
     const [items, setItems] = useState([])
     const [isLoading, setIsLoading] = useState(true)
-    const [currentPage, setCurrentPage] = useState(1)
 
     const sortBy = sortType.replace('-', '');
     const order = sortType.includes('-') ? 'asc' : 'desc';
@@ -29,15 +29,15 @@ export const Home = () => {
     const search = searchValue ? `&search=${searchValue}` : ''
 
     useEffect(() => {
-
-        fetch(`https://646f268609ff19b12086acd1.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search} `)
-            .then((res) => {
-                return res.json()
-            })
-            .then((arr) => {
-                setItems(arr)
+        axios
+            .get(
+                `https://646f268609ff19b12086acd1.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search} `
+            ).then((res) => {
+                setItems(res.data)
                 setIsLoading(false);
             })
+
+        window.scrollTo(0, 0)
     }, [categoryId, sortType, searchValue, currentPage])
 
     const pizzas = items
@@ -49,6 +49,10 @@ export const Home = () => {
         dispatch(setCategoryId(id))
     }
 
+    const onChangePage = (number) => {
+        dispatch(setCurrentPage(number))
+    }
+
     return (
         <div className='container'>
             <div className="content__top">
@@ -57,7 +61,7 @@ export const Home = () => {
             </div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">{isLoading ? skeletons : pizzas}</div>
-            <Pagination onChangePage={(number) => setCurrentPage(number)} />
+            <Pagination currentPage={currentPage} onChangePage={onChangePage} />
         </div>
     )
 }
