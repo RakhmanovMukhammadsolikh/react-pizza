@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios';
 import qs from 'qs'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { selectFilter, setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterSlice'
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
@@ -85,7 +85,7 @@ export const Home = () => {
 
 
     const pizzas = items
-        .map((obj) => <PizzaBlock key={obj.id} {...obj} />)
+        .map((obj) => <Link key={obj.id} to={`/pizza/${obj.id}`}><PizzaBlock {...obj} /></Link>)
 
     const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />)
 
